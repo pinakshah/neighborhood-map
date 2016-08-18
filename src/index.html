@@ -41,14 +41,14 @@
       <div class="col-xs-8 col-sm-3 sidebar-offcanvas" id="sidebar">
         <form>
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search Coffee Shop">
+            <input type="text" class="form-control" placeholder="Search Coffee Shop" data-bind="value: query, valueUpdate: 'keyup'">
             <span class="input-group-btn">
               <button class="btn btn-primary" type="button"><span class="glyphicon glyphicon-filter" aria-hidden="true"></span>&nbsp;Filter</button>
             </span>
           </div>
         </form>
         <br/>
-        <ul class="list-group" data-bind="foreach: locationList">
+        <ul id="locations" class="list-group" data-bind="foreach: filteredLocations">
           <li class="list-group-item" data-bind="text: name"></li>
         </ul>
       </div>
