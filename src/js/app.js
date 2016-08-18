@@ -13,10 +13,10 @@ function initMap() {
 }
 
 // Location Object
-var Location = function(name, lat, lng) {
+var Location = function(title, lat, lng) {
     var self = this;
-    // Location name
-	self.name = ko.observable(name);
+    // Location title
+	self.title = ko.observable(title);
     // Location position
     self.position = {lat: lat, lng: lng};
     // Location visible or not
@@ -58,7 +58,7 @@ var viewModel = function() {
             return self.locations();
         } else {
             return ko.utils.arrayFilter(self.locations(), function(location) {
-                var isValid = location.name().toLowerCase().indexOf(query) >= 0;
+                var isValid = location.title().toLowerCase().indexOf(query) >= 0;
                 location.isVisible(isValid);
                 return isValid;
             });
