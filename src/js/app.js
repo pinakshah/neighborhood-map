@@ -34,14 +34,15 @@ var Location = function(title, lat, lng) {
     self.isVisible = ko.observable(true);
 
     //  Display marker based on location visibility state.
-    self.isVisible.subscribe(function(currentState) {
-        if (currentState) {
-            self.marker.setVisible(true);
-        } else {
-            self.marker.setVisible(false);
+    self.isVisible.subscribe(function(isVisible) {
+        self.marker.setVisible(isVisible);
+        // Close InfoWindow if marker is not visible
+        if (!isVisible) {
             self.marker.infowindow.close();
         }
     });
+    // Flag for active location
+    self.isActive = ko.observable(false);
 }
 
 // Model
@@ -52,7 +53,7 @@ var viewModel = function() {
 	// Query parameter to filter the locations
 	self.query = ko.observable('');
     // Selected Location
-    this.selectedLocation = ko.observable(this.locations()[0] );
+    this.selectedLocation = ko.observable();
 
 	// Fetching coffee shops locations from foursquare API
     var dateString = new Date().toISOString().slice(0,10).replace(/-/g,"");
@@ -101,7 +102,19 @@ var viewModel = function() {
     });
 
     self.selectLocation = function(location) {
+        // Disable animation for previous location and close info window.
+        if (self.selectedLocation() && self.selectedLocation() != location) {
+            self.selectedLocation().marker.setAnimation(null);
+            self.selectedLocation().marker.infowindow.close();
+            self.selectedLocation().isActive(false);
+        }
+        // Select new location
         self.selectedLocation(location);
+        // Enable bounce animation for selected location
+        location.marker.setAnimation(google.maps.Animation.BOUNCE);
+        // Display information window for selected location
+        location.marker.infowindow.open(map, location.marker);
+        location.isActive(true);
     };
 
 	// Toggle filter available in the smaller screen
