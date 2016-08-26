@@ -13,20 +13,40 @@ function initMap() {
 }
 
 // Location Object
-var Location = function(title, lat, lng) {
+var Location = function(title, lat, lng, address, contact, hours, website,
+    rating, ratingColor) {
     var self = this;
     // Location title
 	self.title = ko.observable(title);
+    // Location additional information
+    self.address = (address != null ? address : 'N.A.');
+    self.contact = (contact != null ? contact : 'N.A.');
+    self.hours = (hours != null ? hours : 'N.A.');
+    self.website = (website != null ? website : 'N.A.');
+    self.rating = (rating != null ? rating : 'N.A.');
+    self.ratingColor = (ratingColor != null ? ratingColor : '#ff0000');
     // Location position
     self.position = {lat: lat, lng: lng};
+    self.html = ko.computed(function() {
+        var info = $('script[data-template="location"]').html();
+        info = info.replace(/{{title}}/g, self.title());
+        info = info.replace(/{{address}}/g, self.address);
+        info = info.replace(/{{phone}}/g, self.contact);
+        info = info.replace(/{{hours}}/g, self.hours);
+        info = info.replace(/{{website}}/g, self.website);
+        info = info.replace(/{{rating}}/g, self.rating);
+        info = info.replace(/{{ratingColor}}/g, self.ratingColor);
+        return info;
+    });
+
     // Location marker
     self.marker = new google.maps.Marker({
         map: map,
         position: self.position,
         animation: google.maps.Animation.DROP,
-        title: title,
+        title: self.title(),
         infowindow: new google.maps.InfoWindow({
-            content: title
+            content: self.html()
         })
     });
 
@@ -70,7 +90,10 @@ var viewModel = function() {
             ko.utils.arrayMap(items, function(item) {
                 var venue = item.venue;
                 var location = new Location(venue.name, venue.location.lat,
-                    venue.location.lng);
+                    venue.location.lng, venue.location.formattedAddress,
+                    venue.contact.formattedPhone,
+                    (venue.hours ? venue.hours.status : 'N.A.'), venue.url,
+                    venue.rating, venue.ratingColor);
                 self.locations.push(location);
 
                 google.maps.event.addListener(location.marker, 'click', function() {
@@ -112,9 +135,8 @@ var viewModel = function() {
         self.selectedLocation(location);
         // Enable bounce animation for selected location
         location.marker.setAnimation(google.maps.Animation.BOUNCE);
-        // Display information window for selected location
-        location.marker.infowindow.open(map, location.marker);
         location.isActive(true);
+        showLocationInformation(location);
     };
 
 	// Toggle filter available in the smaller screen
@@ -127,7 +149,6 @@ var viewModel = function() {
 // is clicked. Only one info window will be visible at time on the map.
 function showLocationInformation(location) {
     var infowindow = location.marker.infowindow;
-    infowindow.setContent('<div>' + location.marker.title + '</div>');
     infowindow.open(map, location.marker);
     // Close marker when on clicking on 'X' icon on InfoWindow.
     infowindow.addListener('closeclick',function(){
