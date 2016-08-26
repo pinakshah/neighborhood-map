@@ -48,9 +48,12 @@
           </div>
         </form>
         <br/>
-        <ul id="locations" class="list-group" data-bind="foreach: filteredLocations">
-          <li class="list-group-item" data-bind="text: title"></li>
-        </ul>
+        <div data-bind="with: selectedLocation">
+        Selected Location: <span data-bind="text: title"></span>
+        </div>
+        <div id="locations" class="list-group" data-bind="foreach: { data: filteredLocations, as: 'location' }">
+          <a href="#" class="list-group-item" data-bind="text: title, click: $parent.selectLocation"></a><span data-bind="$parent.selectedLocation.title"></span>
+        </div>
       </div>
       <div class="col-xs-12 col-sm-9">
         <div id="map"></div>

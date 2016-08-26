@@ -8,7 +8,7 @@ function initMap() {
   // Creates a new map with ahmedabad as center location
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: map_lat, lng: map_lng},
-    zoom: 13
+    zoom: 14
   });
 }
 
@@ -24,7 +24,22 @@ var Location = function(title, lat, lng) {
         map: map,
         position: self.position,
         animation: google.maps.Animation.DROP,
-        title: title
+        title: title,
+        infowindow: new google.maps.InfoWindow({
+            content: title
+        })
+    });
+
+    // Used to decide visibility of location
+    self.isVisible = ko.observable(true);
+
+    //  Display marker based on location visibility state.
+    self.isVisible.subscribe(function(currentState) {
+        if (currentState) {
+            self.marker.setVisible(true);
+        } else {
+            self.marker.setVisible(false);
+        }
     });
 }
 
@@ -36,10 +51,12 @@ var viewModel = function() {
 	// Query parameter to filter the locations
 	self.query = ko.observable('');
     // Selected Location
-    this.selectedLocation = ko.observable('Dummy');
+    this.selectedLocation = ko.observable(this.locations()[0] );
 
 	// Fetching coffee shops locations from foursquare API
-    var apiURL = 'https://api.foursquare.com/v2/venues/explore?v=20160819&query=Coffee';
+    var dateString = new Date().toISOString().slice(0,10).replace(/-/g,"");
+    var apiURL = 'https://api.foursquare.com/v2/venues/explore?v=' + dateString
+        +'&query=Coffee';
     apiURL += '&client_id=UPUPOWCSTJIGUEWYOFWHMEJI2J2EDETMWEACC0XXWUGELUAK';
     apiURL += '&client_secret=H55YZOD5SDS03IQQUU0Z5FRW3XPD4P1343CLDR4VXUOUJLHB';
     apiURL += '&ll=' + map_lat + ',' +  map_lng;
@@ -50,17 +67,19 @@ var viewModel = function() {
             var items = data.response.groups[0].items;
             ko.utils.arrayMap(items, function(item) {
                 var venue = item.venue;
-                // Adding click event for location marker
-                /*google.maps.event.addListener(location.marker, 'click', function() {
-                    self.selectLocation(location);
-                }.bind(location));*/
+                var location = new Location(venue.name, venue.location.lat,
+                    venue.location.lng);
+                self.locations.push(location);
 
-                self.locations.push(new Location(venue.name, venue.location.lat,
-                    venue.location.lng));
+                google.maps.event.addListener(location.marker, 'click', function() {
+                    self.selectLocation(location);
+                    showLocationInformation(location);
+                }.bind(location));
             });
         },
         error: function() {
-            $('#locations').append("Failed to get coffee shop locations.");
+            $('#locations').append('Failed to get coffee shop locations. Please'
+                + ' try again later.');
         }
     });
 
@@ -68,22 +87,38 @@ var viewModel = function() {
         var query = self.query().toLowerCase();
         if (!query) {
             return ko.utils.arrayFilter(self.locations(), function(location) {
-                location.marker.setVisible(true);
+                location.isVisible(true);
                 return true;
             });;
         } else {
             return ko.utils.arrayFilter(self.locations(), function(location) {
                 var isValid = location.title().toLowerCase().indexOf(query) >= 0;
-                location.marker.setVisible(isValid);
+                location.isVisible(isValid);
                 return isValid;
             });
         }
     });
 
+    self.selectLocation = function(location) {
+        self.selectedLocation(location);
+    };
+
 	// Toggle filter available in the smaller screen
 	self.toggleFilter = function() {
 		jQuery('.row-offcanvas').toggleClass('active')
 	}
+}
+
+// This function display the location information in InfoWindow when the marker
+// is clicked. Only one info window will be visible at time on the map.
+function showLocationInformation(location) {
+    var infowindow = location.marker.infowindow;
+    infowindow.setContent('<div>' + location.marker.title + '</div>');
+    infowindow.open(map, location.marker);
+    // Close marker when on clicking on 'X' icon on InfoWindow.
+    infowindow.addListener('closeclick',function(){
+        infowindow.setMap(null);
+    });
 }
 
 ko.applyBindings(new viewModel());
