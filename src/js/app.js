@@ -39,6 +39,7 @@ var Location = function(title, lat, lng) {
             self.marker.setVisible(true);
         } else {
             self.marker.setVisible(false);
+            self.marker.infowindow.close();
         }
     });
 }
