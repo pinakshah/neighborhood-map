@@ -19,8 +19,6 @@ var Location = function(title, lat, lng) {
 	self.title = ko.observable(title);
     // Location position
     self.position = {lat: lat, lng: lng};
-    // Location visible or not
-    self.isVisible = ko.observable(true);
     // Location marker
     self.marker = new google.maps.Marker({
         map: map,
@@ -53,9 +51,9 @@ var viewModel = function() {
             ko.utils.arrayMap(items, function(item) {
                 var venue = item.venue;
                 // Adding click event for location marker
-                google.maps.event.addListener(location.marker, 'click', function() {
+                /*google.maps.event.addListener(location.marker, 'click', function() {
                     self.selectLocation(location);
-                }.bind(location));
+                }.bind(location));*/
 
                 self.locations.push(new Location(venue.name, venue.location.lat,
                     venue.location.lng));
@@ -70,13 +68,13 @@ var viewModel = function() {
         var query = self.query().toLowerCase();
         if (!query) {
             return ko.utils.arrayFilter(self.locations(), function(location) {
-                location.isVisible(true);
+                location.marker.setVisible(true);
                 return true;
             });;
         } else {
             return ko.utils.arrayFilter(self.locations(), function(location) {
                 var isValid = location.title().toLowerCase().indexOf(query) >= 0;
-                location.isVisible(isValid);
+                location.marker.setVisible(isValid);
                 return isValid;
             });
         }
