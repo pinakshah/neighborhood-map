@@ -8,12 +8,18 @@ body {
 }
 
 .navbar {
-  margin-bottom: 0px;
+  margin-bottom: 0;
+}
+
+#mapView {
+  position: fixed;
+  right: 0;
 }
 
 #map {
-  min-height: 600px;
+  min-height: 680px;
 }
+
 
 /*
  * Off Canvas
