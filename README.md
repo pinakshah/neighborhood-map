@@ -31,7 +31,7 @@ Here is the list of steps which will help you build source:
 
 `NOTE: To run application on a local server, you can use IIS or python server.`
 
-### Getting started
+### About application
 
 - When you load the index.html, it will load the default coffee shops in Ahmedabad city.
 - It will shows list of coffee shops on the left side bar and related markers on the map.
