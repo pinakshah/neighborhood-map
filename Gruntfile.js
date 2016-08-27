@@ -1,39 +1,87 @@
 module.exports = function(grunt) {
 
-	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
+	require("matchdep").filterDev("grunt-*").forEach(grunt.loadNpmTasks);
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        clean: {
+        /* Clear out the dist directory if it exists */
+	    clean: {
 	      src: ['dist']
 	    },
-        watch: {
-		    scripts: {
-		        files: ['src/js/*/*.js'],
-		        tasks: ['concat', 'uglify'],
-		    },
-		},
-        uglify: {
-		    build: {
+
+	    /* Generate the dist directory if it is missing */
+	    mkdir: {
+	      dist: {
+	        options: {
+	          create: ['dist']
+	        }
+	      }
+	    },
+
+	    /** Copy fonts */
+	    copy: {
+	      fonts: {
+	        files: [{
+	          expand: true,
+	          src: ['src/fonts/*'],
+	          dest: 'dist/fonts/',
+	          filter: 'isFile',
+	          flatten: true
+	        }]
+	      }
+	    },
+
+	    /* Minify HTML */
+	    htmlmin: {
+	      indexhtml: {
+	        options: {
+	          removeComments: true,
+	          collapseWhitespace: true
+	        },
+	        files: [{
+	          expand: true,
+	          cwd: 'src/',
+	          src: ['**/*.html'],
+	          dest: 'dist/'
+	        }]
+	      }
+	    },
+
+	    /** Minify CSS **/
+	    cssmin: {
+	      options: {
+	        report: 'gzip'
+	      },
+	      css: {
+	        files: [{
+	          expand: true,
+	          cwd: 'src/css',
+	          src: ['**/*.css'],
+	          dest: 'dist/css/'
+	        }]
+	      }
+	    },
+
+	    /** Minify JS **/
+	    uglify: {
+			options: {
+	        	report: 'gzip'
+	      	},
+	      	build: {
 				files : {
-			      'dist/js/lib/bootstrap.min.js' : 'src/js/lib/bootstrap.js',
-			      'dist/js/app.min.js' : 'src/js/app.js',
-			    }
-		    }
-		},
-        concat: {
-		    dist: {
-		        src: ['dist/js/lib/bootstrap.min.js', 'dist/js/app.min.js'],
-		        dest: 'dist/js/scripts.js',
-		    },
-		}
+		      		'dist/js/lib/knockout.js' : 'src/js/lib/knockout.js',
+		      		'dist/js/app.min.js' : 'src/js/app.js',
+		    	}
+			}
+	    }
     });
 
-    grunt.registerTask('default', ['clean','uglify', 'concat'] );
-    //grunt.registerTask('default', ['uglify', 'concat'] );
-    grunt.registerTask('mergejs', ['concat'] );
-
+    grunt.registerTask('default', [
+	    'clean',
+	    'mkdir',
+	    'copy',
+	    'htmlmin',
+	    'cssmin',
+	    'uglify'
+	]);
 };
