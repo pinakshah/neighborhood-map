@@ -79,8 +79,8 @@ var viewModel = function() {
     var dateString = new Date().toISOString().slice(0,10).replace(/-/g,"");
     var apiURL = 'https://api.foursquare.com/v2/venues/explore?v=' + dateString
         +'&query=Coffee';
-    apiURL += '&client_id=###CLIENT_ID###';
-    apiURL += '&client_secret=###CLIENT_SECRET###';
+    apiURL += '&client_id=UPUPOWCSTJIGUEWYOFWHMEJI2J2EDETMWEACC0XXWUGELUAK';
+    apiURL += '&client_secret=H55YZOD5SDS03IQQUU0Z5FRW3XPD4P1343CLDR4VXUOUJLHB';
     apiURL += '&ll=' + map_lat + ',' +  map_lng;
 
     $.ajax({
