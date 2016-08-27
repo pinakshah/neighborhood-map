@@ -11,23 +11,26 @@ To get started, check out source from git repository and follow the instructions
 Here is the list of steps which will help you build source:
 
 1. Check out the repository
-
-2. Install grunt client if you have not installed it by executing following command in console.
+2. Create your google account if not available. Create one project in google API console and enable google map API related services.
+3. Replace token 'MAP_API_KEY' with your map api key in index.html at line#61.
+4. Create account in foursquare.com. Once you create account, they will provide client ID and Client Secret.
+5. Replace tokens '###CLIENT_ID###' and '###CLIENT_SECRET###' with your Client ID and Client Secret.
+6. Install grunt client if you have not installed it by executing following command in console. 3. 
 
   ```bash
   npm install -g grunt-cli
   ```
-3. Install grunt modules by executing following command in console. It will install all the modules provided in the **package.json**
+7. Install grunt modules by executing following command in console. It will install all the modules provided in the **package.json**
 
   ```bash
   npm install
   ```
 
-4. Execute following command to build the project. It will create the dist folder with all the optimized resources.
+8. Execute following command to build the project. It will create the dist folder with all the optimized resources.
   ```bash
   grunt
   ```
-5. Open the dist/index.html to view index page 
+9. Open the dist/index.html to view index page 
 
 `NOTE: To run application on a local server, you can use IIS or python server.`
 
