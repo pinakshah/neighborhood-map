@@ -17,7 +17,7 @@ var Location = function(title, lat, lng, address, contact, hours, website,
     rating, ratingColor) {
     var self = this;
     // Location title
-	self.title = ko.observable(title);
+	self.title = title;
     // Location additional information
     self.address = (address != null ? address : 'N.A.');
     self.contact = (contact != null ? contact : 'N.A.');
@@ -27,9 +27,9 @@ var Location = function(title, lat, lng, address, contact, hours, website,
     self.ratingColor = (ratingColor != null ? ratingColor : '#ff0000');
     // Location position
     self.position = {lat: lat, lng: lng};
-    self.html = ko.computed(function() {
+    self.html = function() {
         var info = $('script[data-template="location"]').html();
-        info = info.replace(/{{title}}/g, self.title());
+        info = info.replace(/{{title}}/g, self.title);
         info = info.replace(/{{address}}/g, self.address);
         info = info.replace(/{{phone}}/g, self.contact);
         info = info.replace(/{{hours}}/g, self.hours);
@@ -37,14 +37,14 @@ var Location = function(title, lat, lng, address, contact, hours, website,
         info = info.replace(/{{rating}}/g, self.rating);
         info = info.replace(/{{ratingColor}}/g, self.ratingColor);
         return info;
-    });
+    };
 
     // Location marker
     self.marker = new google.maps.Marker({
         map: map,
         position: self.position,
         animation: google.maps.Animation.DROP,
-        title: self.title(),
+        title: self.title,
         infowindow: new google.maps.InfoWindow({
             content: self.html()
         })
@@ -98,7 +98,6 @@ var viewModel = function() {
 
                 google.maps.event.addListener(location.marker, 'click', function() {
                     self.selectLocation(location);
-                    showLocationInformation(location);
                 }.bind(location));
             });
         },
