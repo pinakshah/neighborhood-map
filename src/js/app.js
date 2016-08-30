@@ -152,6 +152,7 @@ function showLocationInformation(location) {
     // Close marker when on clicking on 'X' icon on InfoWindow.
     infowindow.addListener('closeclick',function(){
         infowindow.setMap(null);
+        location.marker.setAnimation(null);
     });
 }
 
