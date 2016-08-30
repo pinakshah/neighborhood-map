@@ -159,4 +159,8 @@ function showLocationInformation(location) {
     });
 }
 
+function googleMapError(){
+    alert("Error while loading google map. Please try again later.");
+}
+
 ko.applyBindings(new viewModel());
