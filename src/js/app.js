@@ -87,6 +87,7 @@ var viewModel = function() {
         url: apiURL,
         success: function(data) {
             var items = data.response.groups[0].items;
+            var bounds = new google.maps.LatLngBounds();
             ko.utils.arrayMap(items, function(item) {
                 var venue = item.venue;
                 var location = new Location(venue.name, venue.location.lat,
@@ -95,6 +96,8 @@ var viewModel = function() {
                     (venue.hours ? venue.hours.status : 'N.A.'), venue.url,
                     venue.rating, venue.ratingColor);
                 self.locations.push(location);
+                bounds.extend(location.marker.position);
+                map.fitBounds(bounds);
 
                 google.maps.event.addListener(location.marker, 'click', function() {
                     self.selectLocation(location);
