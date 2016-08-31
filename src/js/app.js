@@ -6,12 +6,13 @@ var AHMEDABAD_LAT = 23.033863, AHMEDABAD_LNG = 72.555022;
 var bounds;
 // Initialize the map with default configuration
 function initMap() {
-  // Creates a new map with ahmedabad as center location
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: AHMEDABAD_LAT, lng: AHMEDABAD_LNG},
-    zoom: 14
-  });
-  bounds = new google.maps.LatLngBounds();
+    // Creates a new map with ahmedabad as center location
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: AHMEDABAD_LAT, lng: AHMEDABAD_LNG},
+        zoom: 14
+    });
+    bounds = new google.maps.LatLngBounds();
+    ko.applyBindings(new ViewModel());
 }
 
 // Location Object
@@ -175,5 +176,3 @@ window.onresize = function() {
     // Display all markers on the map when window resizes.
     map.fitBounds(bounds);
 };
-
-ko.applyBindings(new ViewModel());
