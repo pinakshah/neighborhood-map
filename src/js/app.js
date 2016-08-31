@@ -77,7 +77,11 @@ var ViewModel = function() {
 	// Query parameter to filter the locations
 	self.query = ko.observable('');
     // Selected Location
-    this.selectedLocation = ko.observable();
+    self.selectedLocation = ko.observable();
+    // Error message for loading locations
+    self.errorMessage = ko.observable();
+    // Filter
+    self.filterEnabled = ko.observable(false);
 
 	// Fetching coffee shops locations from foursquare API
     var dateString = new Date().toISOString().slice(0,10).replace(/-/g,'');
@@ -108,7 +112,7 @@ var ViewModel = function() {
             });
         },
         error: function() {
-            $('#locations').append('Failed to get coffee shop locations. ' +
+            self.errorMessage('Failed to get coffee shop locations. ' +
                 'Please try again later.');
         }
     });
@@ -145,9 +149,9 @@ var ViewModel = function() {
     };
 
 	// Toggle filter available in the smaller screen
-	self.toggleFilter = function() {
-		jQuery('.row-offcanvas').toggleClass('active');
-	};
+    self.toggleFilter = function() {
+        self.filterEnabled(!self.filterEnabled());
+    };
 };
 
 // This function display the location information in InfoWindow when the marker
