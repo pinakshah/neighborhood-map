@@ -2,7 +2,8 @@
 var map;
 // Latitude and Longitude for center location - Ahmedabad
 var AHMEDABAD_LAT = 23.033863, AHMEDABAD_LNG = 72.555022;
-
+// variable for holding Latitude and Longitude bounds object
+var bounds;
 // Initialize the map with default configuration
 function initMap() {
   // Creates a new map with ahmedabad as center location
@@ -10,6 +11,7 @@ function initMap() {
     center: {lat: AHMEDABAD_LAT, lng: AHMEDABAD_LNG},
     zoom: 14
   });
+  bounds = new google.maps.LatLngBounds();
 }
 
 // Location Object
@@ -89,7 +91,6 @@ var ViewModel = function() {
         url: apiURL,
         success: function(data) {
             var items = data.response.groups[0].items;
-            var bounds = new google.maps.LatLngBounds();
             ko.utils.arrayMap(items, function(item) {
                 var venue = item.venue;
                 var location = new Location(venue.name, venue.location.lat,
@@ -165,5 +166,10 @@ function showLocationInformation(location) {
 function googleMapError(){
     alert('Error while loading google map. Please try again later.');
 }
+
+window.onresize = function() {
+    // Display all markers on the map when window resizes.
+    map.fitBounds(bounds);
+};
 
 ko.applyBindings(new ViewModel());
