@@ -62,6 +62,11 @@ module.exports = function(grunt) {
 	      }
 	    },
 
+	    /** Validate JS **/
+	    jshint: {
+			all: ['src/js/app.js']
+		},
+
 	    /** Minify JS **/
 	    uglify: {
 			options: {
@@ -70,7 +75,7 @@ module.exports = function(grunt) {
 	      	build: {
 				files : {
 		      		'dist/js/lib/knockout.js' : 'src/js/lib/knockout.js',
-		      		'dist/js/app.js' : 'src/js/app.js',
+					'dist/js/app.js' : 'src/js/app.js',
 		    	}
 			}
 	    }
@@ -80,6 +85,7 @@ module.exports = function(grunt) {
 	    'clean',
 	    'mkdir',
 	    'copy',
+	    'jshint',
 	    'htmlmin',
 	    'cssmin',
 	    'uglify'

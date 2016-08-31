@@ -1,13 +1,13 @@
 // variable for holding map object
 var map;
 // Latitude and Longitude for center location - Ahmedabad
-var map_lat = 23.033863, map_lng = 72.555022;
+var AHMEDABAD_LAT = 23.033863, AHMEDABAD_LNG = 72.555022;
 
 // Initialize the map with default configuration
 function initMap() {
   // Creates a new map with ahmedabad as center location
   map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: map_lat, lng: map_lng},
+    center: {lat: AHMEDABAD_LAT, lng: AHMEDABAD_LNG},
     zoom: 14
   });
 }
@@ -15,16 +15,17 @@ function initMap() {
 // Location Object
 var Location = function(title, lat, lng, address, contact, hours, website,
     rating, ratingColor) {
+    'use strict';
     var self = this;
     // Location title
 	self.title = title;
     // Location additional information
-    self.address = (address != null ? address : 'N.A.');
-    self.contact = (contact != null ? contact : 'N.A.');
-    self.hours = (hours != null ? hours : 'N.A.');
-    self.website = (website != null ? website : 'N.A.');
-    self.rating = (rating != null ? rating : 'N.A.');
-    self.ratingColor = (ratingColor != null ? ratingColor : '#ff0000');
+    self.address = (address !== null ? address : 'N.A.');
+    self.contact = (contact !== null ? contact : 'N.A.');
+    self.hours = (hours !== null ? hours : 'N.A.');
+    self.website = (website !== null ? website : 'N.A.');
+    self.rating = (rating !== null ? rating : 'N.A.');
+    self.ratingColor = (ratingColor !== null ? ratingColor : '#ff0000');
     // Location position
     self.position = {lat: lat, lng: lng};
     self.html = function() {
@@ -63,10 +64,11 @@ var Location = function(title, lat, lng, address, contact, hours, website,
     });
     // Flag for active location
     self.isActive = ko.observable(false);
-}
+};
 
 // Model
-var viewModel = function() {
+var ViewModel = function() {
+    'use strict';
 	var self = this;
 	// List of locations to be displayed
 	self.locations = ko.observableArray([]);
@@ -76,12 +78,12 @@ var viewModel = function() {
     this.selectedLocation = ko.observable();
 
 	// Fetching coffee shops locations from foursquare API
-    var dateString = new Date().toISOString().slice(0,10).replace(/-/g,"");
-    var apiURL = 'https://api.foursquare.com/v2/venues/explore?v=' + dateString
-        +'&query=Coffee';
+    var dateString = new Date().toISOString().slice(0,10).replace(/-/g,'');
+    var apiURL = 'https://api.foursquare.com/v2/venues/explore?v=' +
+    dateString +'&query=Coffee';
     apiURL += '&client_id=UPUPOWCSTJIGUEWYOFWHMEJI2J2EDETMWEACC0XXWUGELUAK';
     apiURL += '&client_secret=H55YZOD5SDS03IQQUU0Z5FRW3XPD4P1343CLDR4VXUOUJLHB';
-    apiURL += '&ll=' + map_lat + ',' +  map_lng;
+    apiURL += '&ll=' + AHMEDABAD_LAT + ',' +  AHMEDABAD_LNG;
 
     $.ajax({
         url: apiURL,
@@ -105,8 +107,8 @@ var viewModel = function() {
             });
         },
         error: function() {
-            $('#locations').append('Failed to get coffee shop locations. Please'
-                + ' try again later.');
+            $('#locations').append('Failed to get coffee shop locations. ' +
+                'Please try again later.');
         }
     });
 
@@ -116,7 +118,7 @@ var viewModel = function() {
             return ko.utils.arrayFilter(self.locations(), function(location) {
                 location.isVisible(true);
                 return true;
-            });;
+            });
         } else {
             return ko.utils.arrayFilter(self.locations(), function(location) {
                 var isValid = location.title.toLowerCase().indexOf(query) >= 0;
@@ -143,13 +145,14 @@ var viewModel = function() {
 
 	// Toggle filter available in the smaller screen
 	self.toggleFilter = function() {
-		jQuery('.row-offcanvas').toggleClass('active')
-	}
-}
+		jQuery('.row-offcanvas').toggleClass('active');
+	};
+};
 
 // This function display the location information in InfoWindow when the marker
 // is clicked. Only one info window will be visible at time on the map.
 function showLocationInformation(location) {
+    'use strict';
     var infowindow = location.marker.infowindow;
     infowindow.open(map, location.marker);
     // Close marker when on clicking on 'X' icon on InfoWindow.
@@ -160,7 +163,7 @@ function showLocationInformation(location) {
 }
 
 function googleMapError(){
-    alert("Error while loading google map. Please try again later.");
+    alert('Error while loading google map. Please try again later.');
 }
 
-ko.applyBindings(new viewModel());
+ko.applyBindings(new ViewModel());
