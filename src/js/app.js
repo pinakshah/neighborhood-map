@@ -119,7 +119,7 @@ var viewModel = function() {
             });;
         } else {
             return ko.utils.arrayFilter(self.locations(), function(location) {
-                var isValid = location.title().toLowerCase().indexOf(query) >= 0;
+                var isValid = location.title.toLowerCase().indexOf(query) >= 0;
                 location.isVisible(isValid);
                 return isValid;
             });
