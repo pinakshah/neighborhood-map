@@ -70,7 +70,7 @@ module.exports = function(grunt) {
 	      	build: {
 				files : {
 		      		'dist/js/lib/knockout.js' : 'src/js/lib/knockout.js',
-		      		'dist/js/app.min.js' : 'src/js/app.js',
+		      		'dist/js/app.js' : 'src/js/app.js',
 		    	}
 			}
 	    }
