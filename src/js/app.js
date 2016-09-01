@@ -2,6 +2,9 @@
 var map;
 // Latitude and Longitude for center location - Ahmedabad
 var AHMEDABAD_LAT = 23.033863, AHMEDABAD_LNG = 72.555022;
+// Foursquare API client Id and client secret
+var CLIENT_ID = 'UPUPOWCSTJIGUEWYOFWHMEJI2J2EDETMWEACC0XXWUGELUAK';
+var CLIENT_SECRET = 'H55YZOD5SDS03IQQUU0Z5FRW3XPD4P1343CLDR4VXUOUJLHB';
 // variable for holding Latitude and Longitude bounds object
 var bounds;
 // Initialize the map with default configuration
@@ -18,7 +21,7 @@ function initMap() {
 
 // Location Object
 var Location = function(title, lat, lng, address, contact, hours, website,
-    rating, ratingColor) {
+    rating, ratingColor, id) {
     'use strict';
     var self = this;
     // Location title
@@ -41,6 +44,10 @@ var Location = function(title, lat, lng, address, contact, hours, website,
         info = info.replace(/{{website}}/g, self.website);
         info = info.replace(/{{rating}}/g, self.rating);
         info = info.replace(/{{ratingColor}}/g, self.ratingColor);
+        info = info.replace(/{{venue}}/g,
+            self.title.toLowerCase().replace(/ /g, '-'));
+        info = info.replace(/{{venueId}}/g, id);
+        info = info.replace(/{{clientId}}/g, CLIENT_ID);
         return info;
     };
 
@@ -78,9 +85,9 @@ var ViewModel = function() {
     var dateString = new Date().toISOString().slice(0,10).replace(/-/g,'');
     var apiURL = 'https://api.foursquare.com/v2/venues/explore?v=' +
     dateString +'&query=Coffee';
-    apiURL += '&client_id=UPUPOWCSTJIGUEWYOFWHMEJI2J2EDETMWEACC0XXWUGELUAK';
-    apiURL += '&client_secret=H55YZOD5SDS03IQQUU0Z5FRW3XPD4P1343CLDR4VXUOUJLHB';
-    apiURL += '&ll=' + AHMEDABAD_LAT + ',' +  AHMEDABAD_LNG;
+    apiURL += '&client_id=' + CLIENT_ID;
+    apiURL += '&client_secret=' + CLIENT_SECRET;
+    apiURL += '&ll=' + AHMEDABAD_LAT + ',' + AHMEDABAD_LNG;
 
     $.ajax({
         url: apiURL,
@@ -92,7 +99,7 @@ var ViewModel = function() {
                     venue.location.lng, venue.location.formattedAddress,
                     venue.contact.formattedPhone,
                     (venue.hours ? venue.hours.status : 'N.A.'), venue.url,
-                    venue.rating, venue.ratingColor);
+                    venue.rating, venue.ratingColor, venue.id);
                 self.locations.push(location);
                 bounds.extend(location.marker.position);
                 map.fitBounds(bounds);
