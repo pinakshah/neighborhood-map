@@ -55,17 +55,6 @@ var Location = function(title, lat, lng, address, contact, hours, website,
         })
     });
 
-    // Used to decide visibility of location
-    self.isVisible = ko.observable(true);
-
-    //  Display marker based on location visibility state.
-    self.isVisible.subscribe(function(isVisible) {
-        self.marker.setVisible(isVisible);
-        // Close InfoWindow if marker is not visible
-        if (!isVisible) {
-            self.marker.infowindow.close();
-        }
-    });
     // Flag for active location
     self.isActive = ko.observable(false);
 };
@@ -123,13 +112,17 @@ var ViewModel = function() {
         var query = self.query().toLowerCase();
         if (!query) {
             return ko.utils.arrayFilter(self.locations(), function(location) {
-                location.isVisible(true);
+                location.marker.setVisible(true);
                 return true;
             });
         } else {
             return ko.utils.arrayFilter(self.locations(), function(location) {
                 var isValid = location.title.toLowerCase().indexOf(query) >= 0;
-                location.isVisible(isValid);
+                location.marker.setVisible(isValid);
+                // Close InfoWindow if marker is not visible
+                if (!isValid) {
+                    location.marker.infowindow.close();
+                }
                 return isValid;
             });
         }
