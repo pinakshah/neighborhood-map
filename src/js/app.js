@@ -6,6 +6,7 @@ var AHMEDABAD_LAT = 23.033863, AHMEDABAD_LNG = 72.555022;
 var bounds;
 // Initialize the map with default configuration
 function initMap() {
+    'use strict';
     // Creates a new map with ahmedabad as center location
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: AHMEDABAD_LAT, lng: AHMEDABAD_LNG},
@@ -23,12 +24,12 @@ var Location = function(title, lat, lng, address, contact, hours, website,
     // Location title
 	self.title = title;
     // Location additional information
-    self.address = (address !== null ? address : 'N.A.');
-    self.contact = (contact !== null ? contact : 'N.A.');
-    self.hours = (hours !== null ? hours : 'N.A.');
-    self.website = (website !== null ? website : 'N.A.');
-    self.rating = (rating !== null ? rating : 'N.A.');
-    self.ratingColor = (ratingColor !== null ? ratingColor : '#ff0000');
+    self.address = (address ? address : 'N.A.');
+    self.contact = (contact ? contact : 'N.A.');
+    self.hours = (hours ? hours : 'N.A.');
+    self.website = (website ? website : 'N.A.');
+    self.rating = (rating ? rating : 'N.A.');
+    self.ratingColor = (ratingColor ? ratingColor : '#ff0000');
     // Location position
     self.position = {lat: lat, lng: lng};
     self.html = function() {
@@ -169,7 +170,7 @@ function showLocationInformation(location) {
 }
 
 function googleMapError(){
-    alert('Error while loading google map. Please try again later.');
+    alert('Error while loading Google map. Please try again later.');
 }
 
 window.onresize = function() {
